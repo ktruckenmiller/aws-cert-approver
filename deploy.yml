@@ -1,0 +1,11 @@
+---
+- hosts: localhost
+  gather_facts: no
+  vars:
+    stack_name: cert-approver
+    cf_template: cert_approver.yml
+    parameters:
+      BucketListener: email-forwarded
+      FilterPrefix: cert-requests
+  roles:
+    - aws-sam

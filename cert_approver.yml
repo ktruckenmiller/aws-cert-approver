@@ -1,0 +1,43 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: A function is triggered off an upload to a bucket. It logs the content type of the uploaded object.
+Parameters:
+  Handler:
+    Type: String
+  Runtime:
+    Type: String
+  S3CodeBucket:
+    Type: String
+  S3CodeKey:
+    Type: String
+  BucketListener:
+    Type: String
+  FilterPrefix:
+    Type: String
+
+
+Resources:
+  ProcessorFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: !Ref Handler
+      Runtime: !Ref Runtime
+      CodeUri:
+        Bucket: !Ref S3CodeBucket
+        Key: !Ref S3CodeKey
+      Policies: AmazonS3ReadOnlyAccess
+      Events:
+        EmailArrival:
+          Type: S3
+          Properties:
+            Bucket: !Ref Bucket
+            Events: s3:ObjectCreated:*
+
+  Bucket:
+      Type: AWS::S3::Bucket
+      BucketName: cert-approvals
+      LifecycleConfiguration:
+        Rules:
+          - Id: DeleteStuff
+            Status: Enabled
+            ExpirationInDays: 30

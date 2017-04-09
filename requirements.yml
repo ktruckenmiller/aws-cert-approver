@@ -1,4 +1,4 @@
 ---
-- src: git+ssh://git@github.com/ktruckenmiller/ansible-role-aws-sam.git
+- src: https://github.com/ktruckenmiller/ansible-role-aws-sam
   name: aws-sam
   version: master

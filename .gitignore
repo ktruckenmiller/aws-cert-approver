@@ -1,2 +1,8 @@
 roles
 .DS_Store
+test_files
+__pycache__
+*.pyc
+test_all.py
+.cache
+email_file

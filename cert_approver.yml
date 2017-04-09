@@ -14,6 +14,9 @@ Parameters:
     Type: String
   FilterPrefix:
     Type: String
+  Timeout:
+    Type: String
+    Default: 30
 
 
 Resources:
@@ -22,6 +25,7 @@ Resources:
     Properties:
       Handler: !Ref Handler
       Runtime: !Ref Runtime
+      Timeout: !Ref Timeout
       CodeUri:
         Bucket: !Ref S3CodeBucket
         Key: !Ref S3CodeKey
@@ -34,10 +38,26 @@ Resources:
             Events: s3:ObjectCreated:*
 
   Bucket:
-      Type: AWS::S3::Bucket
-      BucketName: cert-approvals
-      LifecycleConfiguration:
-        Rules:
-          - Id: DeleteStuff
-            Status: Enabled
-            ExpirationInDays: 30
+    Type: AWS::S3::Bucket
+    BucketName: cert-approvals
+    LifecycleConfiguration:
+      Rules:
+        - Id: DeleteStuff
+          Status: Enabled
+          ExpirationInDays: 30
+  BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref Bucket
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: 'ses.amazonaws.com'
+            Action:
+              - 's3:PutObject'
+            Resource: !Join ["", ["arn:aws:s3:::", !Ref Bucket, "/*"]]
+            Condition:
+              StringEquals:
+                "aws:Referer": '601394826940'

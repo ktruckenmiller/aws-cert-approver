@@ -1,0 +1,4 @@
+mechanize
+html5lib
+pytest
+boto3

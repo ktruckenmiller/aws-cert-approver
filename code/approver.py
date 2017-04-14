@@ -2,6 +2,7 @@ import boto3
 import mechanize
 import os
 import sys
+from pprint import pprint
 reload(sys)
 sys.setdefaultencoding('utf8')
 
@@ -18,6 +19,31 @@ def parse_link_from_email_file(the_file):
         if "https://certificates.amazon.com/approvals?code=" in m:
             return m.strip()
 
+def parse_cert_id_from_email(the_file):
+    msg = open(the_file, 'r').readlines()
+    for m in msg:
+        if "Certificate identifier: " in m:
+            return m.split('r:')[1].strip()
+
+def is_acm(cert_id, context):
+
+    ACCOUNT_ID = context.invoked_function_arn.split(":")[4]
+    REGION = context.invoked_function_arn.split(":")[3]
+    acm = boto3.client('acm', region_name=REGION)
+    try:
+        cert_dict = acm.describe_certificate(
+            CertificateArn='arn:aws:acm:{}:{}:certificate/{}'.format(REGION, ACCOUNT_ID, cert_id)
+        )
+        print cert_dict['Certificate']
+        if cert_dict['Certificate']['Status'] == 'PENDING_VALIDATION':
+            return True
+
+    except Exception as e:
+        print e
+        return False
+
+
+
 def approve_link(link):
     def select_form(form):
         return form.attrs.get('action', None) == '/approvals'
@@ -31,4 +57,7 @@ def approve_link(link):
 def lambda_handler(event, context):
     email_file = get_s3_file_from_event(event)
     link = parse_link_from_email_file(email_file)
-    approve_link(link)
+    cert_id = parse_cert_id_from_email(email_file)
+
+    if is_acm(cert_id, context):
+        approve_link(link)

@@ -3,8 +3,13 @@
 Dependencies:
 - Docker
 - https://github.com/ktruckenmiller/docker-friend
+- An AWS role that can deploy cloudformation SAM
 
- to deploy ( docker-friend authenticated )
+
+First, make sure you're authenticate with docker-friend and MFA, and that the
+Makefile has the proper IAM_ROLE for permissions to deploy cloudformation.
+
+Then to deploy, simply type:
 
  `make`
 

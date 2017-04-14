@@ -36,7 +36,7 @@ Resources:
               Action:
                 - s3:Get*
                 - s3:List*
-              Resource: !Join ["", ["arn:aws:s3:::", !Ref Bucket, "/*"]]
+              Resource: "*"
             - Effect: Allow
               Action:
                 - acm:Describe*

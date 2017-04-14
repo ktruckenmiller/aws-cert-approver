@@ -1,4 +1,4 @@
-current_dir=~/Projects/aws-cert-approver
+current_dir=$(shell pwd)
 deploy:
 	docker run -it --rm \
 	-v /var/run/docker.sock:/var/run/docker.sock \

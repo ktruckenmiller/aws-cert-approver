@@ -16,3 +16,5 @@ Then to deploy, simply type:
 
 *To auto approve a cert, make sure that you have SES making amazon spit that acm admin
 email to the s3 bucket that this cloudformation creates.
+
+https://cloudcraft.co/view/e0bdbc36-b737-4a48-adf4-24d484ef0740?key=p7vDw9bhwD7LLvZ_6VZxTg&embed=true
